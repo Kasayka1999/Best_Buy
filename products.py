@@ -1,5 +1,3 @@
-import store
-
 class Product:
 
     def __init__(self, name, price, quantity):
@@ -29,37 +27,13 @@ class Product:
         Product.set_quantity(self, 0)
 
     def show(self):
-        print(f"{self.name}, Price: {self.price}, Quantity: {self.quantity}")
-
+        if Product.is_active(self):
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
 
     def buy(self, quantity):
         if quantity > self.quantity or quantity < 0:
-            raise TypeError(f"There is not enough quantity, currently active quantity is: {self.quantity}")
+            raise TypeError(f"Quantity larger than what exists. Available Stock = {self.quantity}")
         else:
             self.quantity -= quantity
             total_price = float(self.price * quantity)
             return total_price
-
-
-def main():
-    """test cases"""
-    try:
-        iphone = Product("Iphone", price=250, quantity=500)
-        mac = Product("MacBook", price=1450, quantity=100)
-
-        print(iphone.buy(50))
-        print(mac.buy(100))
-        #print(mac.buy(1))
-        print(mac.is_active())
-
-        iphone.show()
-        mac.show()
-
-        iphone.set_quantity(1000)
-        iphone.show()
-    except TypeError as e:
-        print(f"Details {e}")
-
-
-if __name__ == "__main__":
-    main()
