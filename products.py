@@ -1,3 +1,5 @@
+import store
+
 class Product:
 
     def __init__(self, name, price, quantity):
@@ -36,7 +38,7 @@ class Product:
         else:
             self.quantity -= quantity
             total_price = float(self.price * quantity)
-            return f"{total_price} euro"
+            return total_price
 
 
 def main():
