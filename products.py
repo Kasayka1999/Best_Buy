@@ -3,6 +3,8 @@ class Product:
     def __init__(self, name, price, quantity):
         if not isinstance(price, (int, float)) or not isinstance(quantity, int) or price < 0 or quantity < 0:
             raise TypeError("Price and Quantity must be a positive number. (ex: Price: 12.5 (float or int) // Quantity: 5 (only int)")
+        if not name:
+            raise TypeError("Name can't be empty")
         self.name = name
         self.price = price
         self.quantity = quantity
