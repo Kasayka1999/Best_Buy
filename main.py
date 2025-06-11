@@ -1,10 +1,13 @@
 import products
 import store
+from Term_05.Best_Buy.products import NonStockedProduct, LimitedProduct
 
 # setup initial stock of inventory
 product_list = [ products.Product("MacBook Air M2", price=1450, quantity=100),
                  products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                 products.Product("Google Pixel 7", price=500, quantity=250)
+                 products.Product("Google Pixel 7", price=500, quantity=250),
+                 products.NonStockedProduct("Windows License", price=125),
+                 products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
                ]
 best_buy = store.Store(product_list)
 
@@ -65,14 +68,15 @@ def main():
                                 print("Product added to list!\n")
                                 found = True
                                 break  # No need to keep looping
-
+                            index_count += 1
                     if not found:
                         print(f"Error adding product!\n")
                 else:
                     print(f"Error adding product!\n")
             try:
-                message = best_buy.order(order_list)
-                print(f"********\nOrder made! Total payment: ${message}")
+                if order_list:
+                    message = best_buy.order(order_list)
+                    print(f"********\nOrder made! Total payment: ${message}")
             except TypeError as e:
                 print(f"Error while making order! {e}")
 

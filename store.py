@@ -1,3 +1,4 @@
+from Term_05.Best_Buy.products import LimitedProduct
 from products import Product
 
 class Store:

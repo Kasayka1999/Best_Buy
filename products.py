@@ -1,7 +1,7 @@
 class Product:
 
     def __init__(self, name, price, quantity):
-        if not isinstance(price, (int, float)) or not isinstance(quantity, int) or price < 0 or quantity < 0:
+        if not isinstance(price, (int, float)) or not isinstance(quantity, (int, NonStockedProduct)) or price < 0 or quantity < 0:
             raise TypeError("Price and Quantity must be a positive number. (ex: Price: 12.5 (float or int) // Quantity: 5 (only int)")
         if not name:
             raise TypeError("Name can't be empty")
@@ -33,9 +33,40 @@ class Product:
             return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
 
     def buy(self, quantity):
+        if isinstance(self, NonStockedProduct):
+            return float(self.price * quantity)
+
         if quantity > self.quantity or quantity < 0:
             raise TypeError(f"Quantity larger than what exists. Available Stock = {self.quantity}")
         else:
             self.quantity -= quantity
             total_price = float(self.price * quantity)
             return total_price
+
+class NonStockedProduct(Product):
+
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=0)
+
+    def show(self):
+        return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
+
+    def is_active(self):
+        return True
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity):
+        if quantity > self.quantity or quantity > self.maximum:
+            raise TypeError(f"Only 1 is allowed from this product!")
+        else:
+            self.quantity -= quantity
+            total_price = float(self.price * quantity)
+            return total_price
+
+    def show(self):
+        return f"{self.name}, Price: {self.price}, Limited to 1 per order!"
