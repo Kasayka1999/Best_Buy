@@ -1,3 +1,5 @@
+import promotions
+
 class Product:
 
     def __init__(self, name, price, quantity):
@@ -8,6 +10,7 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
+        self._promotion = None
 
     def get_quantity(self):
         return int(self.quantity)
@@ -30,18 +33,30 @@ class Product:
 
     def show(self):
         if Product.is_active(self):
-            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.get_promotion_name()}"
 
     def buy(self, quantity):
         if isinstance(self, NonStockedProduct):
-            return float(self.price * quantity)
+            if self._promotion:
+                return self._promotion.apply_promotion(self, quantity)
+            else:
+                return float(self.price * quantity)
 
         if quantity > self.quantity or quantity < 0:
             raise TypeError(f"Quantity larger than what exists. Available Stock = {self.quantity}")
         else:
             self.quantity -= quantity
-            total_price = float(self.price * quantity)
-            return total_price
+            if self._promotion:
+                return self._promotion.apply_promotion(self, quantity)
+            else:
+                total_price = float(self.price * quantity)
+                return total_price
+
+    def set_promotion(self, promotion):
+        self._promotion = promotion
+
+    def get_promotion_name(self):
+        return self._promotion.name if self._promotion else "None"
 
 class NonStockedProduct(Product):
 
@@ -49,7 +64,7 @@ class NonStockedProduct(Product):
         super().__init__(name, price, quantity=0)
 
     def show(self):
-        return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
+        return f"{self.name}, Price: {self.price}, Quantity: Unlimited, Promotion: {self.get_promotion_name()}"
 
     def is_active(self):
         return True
@@ -65,8 +80,12 @@ class LimitedProduct(Product):
             raise TypeError(f"Only 1 is allowed from this product!")
         else:
             self.quantity -= quantity
-            total_price = float(self.price * quantity)
-            return total_price
+            if self._promotion:
+                return self._promotion.apply_promotion(self, quantity)
+            else:
+                total_price = float(self.price * quantity)
+                return total_price
 
     def show(self):
-        return f"{self.name}, Price: {self.price}, Limited to 1 per order!"
+        if Product.is_active(self):
+            return f"{self.name}, Price: {self.price}, Limited to 1 per order!, Promotion: {self.get_promotion_name()}"
