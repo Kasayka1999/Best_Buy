@@ -3,6 +3,9 @@ import products
 
 
 class Promotion(ABC):
+    """
+    Promotion class using abstractmethod to not able to set Promotion if not Promotion type selected.
+    """
     @abstractmethod
     def __init__(self, name):
         self.name = name
@@ -12,6 +15,9 @@ class Promotion(ABC):
 
 
 class SecondHalfPrice(Promotion):
+    """
+    Every second product for half price
+    """
     def __init__(self, name):
         self.name = name
 
@@ -22,6 +28,9 @@ class SecondHalfPrice(Promotion):
 
 
 class ThirdOneFree(Promotion):
+    """
+    Every third product is not calculating in total price.
+    """
     def __init__(self, name):
         self.name = name
 
@@ -31,6 +40,9 @@ class ThirdOneFree(Promotion):
         return float(product.price * quantity)
 
 class PercentDiscount(Promotion):
+    """
+    Classic percentage discount.
+    """
     def __init__(self, name, percent):
         self.name = name
         self.percent = percent

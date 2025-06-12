@@ -2,7 +2,9 @@ from Term_05.Best_Buy.products import LimitedProduct
 from products import Product
 
 class Store:
-
+    """
+    To manage a store, add, remove and total order, not only 1 product multiple products same time.
+    """
     def __init__(self, products):
         self.products = products
 

@@ -10,7 +10,7 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
-        self._promotion = None
+        self._promotion = None #if not setted a promotion always return none
 
     def get_quantity(self):
         return int(self.quantity)
@@ -36,6 +36,9 @@ class Product:
             return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.get_promotion_name()}"
 
     def buy(self, quantity):
+        """
+        calculating the price based on stock, or promotion.
+        """
         if isinstance(self, NonStockedProduct):
             if self._promotion:
                 return self._promotion.apply_promotion(self, quantity)
@@ -53,13 +56,18 @@ class Product:
                 return total_price
 
     def set_promotion(self, promotion):
+        """
+        this works as a command to set the the promotion on specific product.
+        """
         self._promotion = promotion
 
     def get_promotion_name(self):
         return self._promotion.name if self._promotion else "None"
 
 class NonStockedProduct(Product):
-
+    """
+    Type for the products without Quantity limits like Digital Products
+    """
     def __init__(self, name, price):
         super().__init__(name, price, quantity=0)
 
@@ -67,16 +75,23 @@ class NonStockedProduct(Product):
         return f"{self.name}, Price: {self.price}, Quantity: Unlimited, Promotion: {self.get_promotion_name()}"
 
     def is_active(self):
-        return True
+        return True #return True because should be an active product when we ordering from menu
 
 
 class LimitedProduct(Product):
+    """
+    Limited products, able to add maximum purchase limit per order.
+    """
+
     def __init__(self, name, price, quantity, maximum):
         super().__init__(name, price, quantity)
         self.maximum = maximum
 
     def buy(self, quantity):
-        if quantity > self.quantity or quantity > self.maximum:
+        """
+        calculating the price based on stock, or promotion.
+        """
+        if quantity > self.quantity or quantity > self.maximum: # if exceed maximum limit or no stock, raise an error.
             raise TypeError(f"Only 1 is allowed from this product!")
         else:
             self.quantity -= quantity

@@ -70,7 +70,7 @@ def main():
                     found = False
                     index_count = 1
                     for product in product_list:
-                        if product.is_active():
+                        if product.is_active(): #check if product active
                             if int(get_product) == index_count:
                                 order_list.append((product, int(get_amount)))
                                 index_count += 1
